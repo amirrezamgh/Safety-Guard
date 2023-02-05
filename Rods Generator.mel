@@ -1,0 +1,263 @@
+/////////////////////////////////////// 
+//  Develeper: Amirreza Moghaddam    //        
+//  Email: amirmoghadam716@yahoo.com //        
+///////////////////////////////////////       
+if (`objExists rodsCy1`){
+    select -r rodsCy1;
+    doDelete;
+}
+if (`objExists bend1Handle`){
+    select -r bend1Handle;
+    doDelete;
+}
+polyCylinder -ch on -o on -r 1.5 -h 10 -sc 1 -cuv 3 -sh 20 -n rodsCy1;
+nonLinear -type bend  -lowBound 0 -highBound 1 -curvature 90;
+//UI
+if (`window -exists RodsGen`){
+    deleteUI RodsGen;
+}
+window -t "Rods Generator" -h 200 -w 150 RodsGen;
+gridLayout -nc 2 -cwh 150 60;
+text -l "length";
+floatField -v 60 -max 300 lValue;
+global float $l = 60;
+$l = `floatField -q -value lValue`;
+string $button = `button -label "Test"`;
+button -edit -c("changeButtonLabel " + $button) -bgc 1 0.365 0.365 $button;
+button -l "Length OK" -bgc 0.365 1 0.365 -c "length_ok";
+text -label "Developed By" -bgc 0.365 0.365 1 ;
+text -label " Amirreza Moghaddam" -bgc 0.365 0.365 1 ;
+showWindow RodsGen;
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   proc changeButtonLabel(string $whichButton) {
+     string $labelA;
+     string $labelBr;
+     string $currentlabel;
+     $currentlabel = `button -q -l $whichButton`;
+     $labelA = "reEdit";
+     $labelB = "reEdit";
+   if ($currentlabel != $labelA) { // Optionnnnnnnnnnnnnnnnnnnnnnnnnnnnnn AAAAAAAAAAAAAA
+       button -edit -label $labelA $whichButton;
+       select -r rodsCy1 ;
+       select -add bend1Handle ;
+       doDelete;
+       $l = `floatField -q -value lValue`;
+       polyCylinder -ch on -o on -r 1.5 -h 10 -sc 1 -cuv 3 -sh 20 -n rodsCy1;
+    nonLinear -type bend  -lowBound 0 -highBound 1 -curvature 90;
+
+    select -r rodsCy1.f[420:439] ; //Length
+    polyExtrudeFacet -ch 1 -kft on -pvx 3.183098555 -pvy 3.183098793 -pvz -2.980232239e-07 -divisions 1 -twist 0 -taper 1 -off 0 -thickness $l -smoothingAngle 30;
+
+    select -r rodsCy1.f[400:419] ; //Height
+    polyExtrudeFacet -ch 1 -kft 1 -pvx 3.183098555 -pvy 3.183098793 -pvz -2.980232239e-07 -divisions 1 -twist 0 -taper 1 -off 0 -thickness 80 -smoothingAngle 30;
+
+    select -r rodsCy1.f[400:439] ;
+    doDelete;
+
+    vector $position = `pointPosition -w rodsCy1.vtx[429]`;
+    vector $position2 = `pointPosition -w rodsCy1.vtx[439]`;
+    vector $sum =  $position + $position2;
+    vector $avg =  $sum /2;
+
+    move -r ($avg.x) ($avg.y) ($avg.z) rodsCy1.scalePivot rodsCy1.rotatePivot ;
+    polyMirrorFace  -cutMesh 1 -axis 0 -axisDirection 0 -mergeMode 1 -mergeThresholdType 0 -mergeThreshold 0.001 -mirrorAxis 1 -mirrorPosition 0 -smoothingAngle 30 -flipUVs 0 -ch 1 rodsCy1;  
+} else {
+       button -edit -label $labelB $whichButton; //Optionnnnnnnnnnnnnnnnnnnnn BBBBBBBBBBBBBBBBBBBBBB
+       select -r rodsCy1 ;
+       select -add bend1Handle ;
+       doDelete;
+       $l = `floatField -q -value lValue`;
+       polyCylinder -ch on -o on -r 1.5 -h 10 -sc 1 -cuv 3 -sh 20 -n rodsCy1;
+    nonLinear -type bend  -lowBound 0 -highBound 1 -curvature 90;
+
+    select -r rodsCy1.f[420:439] ; //Length
+    polyExtrudeFacet -ch 1 -kft on -pvx 3.183098555 -pvy 3.183098793 -pvz -2.980232239e-07 -divisions 1 -twist 0 -taper 1 -off 0 -thickness $l -smoothingAngle 30;
+
+    select -r rodsCy1.f[400:419] ; //Height
+    polyExtrudeFacet -ch 1 -kft 1 -pvx 3.183098555 -pvy 3.183098793 -pvz -2.980232239e-07 -divisions 1 -twist 0 -taper 1 -off 0 -thickness 80 -smoothingAngle 30;
+
+    select -r rodsCy1.f[400:439] ;
+    doDelete;
+
+    vector $position = `pointPosition -w rodsCy1.vtx[429]`;
+    vector $position2 = `pointPosition -w rodsCy1.vtx[439]`;
+    vector $sum =  $position + $position2;
+    vector $avg =  $sum /2;
+
+    move -r ($avg.x) ($avg.y) ($avg.z) rodsCy1.scalePivot rodsCy1.rotatePivot ;
+    polyMirrorFace  -cutMesh 1 -axis 0 -axisDirection 0 -mergeMode 1 -mergeThresholdType 0 -mergeThreshold 0.001 -mirrorAxis 1 -mirrorPosition 0 -smoothingAngle 30 -flipUVs 0 -ch 1 rodsCy1;
+}
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  global proc length_ok() {
+     select -r rodsCy1 ;
+     select -add bend1Handle ;
+      doDelete;
+      $l = `floatField -q -value lValue`;
+     polyCylinder -ch on -o on -r 1.5 -h 10 -sc 1 -cuv 3 -sh 20 -n rodsCy1;
+nonLinear -type bend  -lowBound 0 -highBound 1 -curvature 90;
+
+select -r rodsCy1.f[420:439] ; //Length
+polyExtrudeFacet -ch 1 -kft on -pvx 3.183098555 -pvy 3.183098793 -pvz -2.980232239e-07 -divisions 1 -twist 0 -taper 1 -off 0 -thickness $l -smoothingAngle 30;
+
+select -r rodsCy1.f[400:419] ; //Height
+polyExtrudeFacet -ch 1 -kft 1 -pvx 3.183098555 -pvy 3.183098793 -pvz -2.980232239e-07 -divisions 1 -twist 0 -taper 1 -off 0 -thickness 80 -smoothingAngle 30;
+
+select -r rodsCy1.f[400:439] ;
+doDelete;
+
+vector $position = `pointPosition -w rodsCy1.vtx[429]`;
+vector $position2 = `pointPosition -w rodsCy1.vtx[439]`;
+vector $sum =  $position + $position2;
+vector $avg =  $sum /2;
+
+move -r ($avg.x) ($avg.y) ($avg.z) rodsCy1.scalePivot rodsCy1.rotatePivot ;
+polyMirrorFace  -cutMesh 1 -axis 0 -axisDirection 0 -mergeMode 1 -mergeThresholdType 0 -mergeThreshold 0.001 -mirrorAxis 1 -mirrorPosition 0 -smoothingAngle 30 -flipUVs 0 -ch 1 rodsCy1;
+setAttr "bend1Handle.tx" 0.1;
+//UI
+if (`window -exists RodsGen`){
+    deleteUI RodsGen; }
+window -t "Rods Generator" -h 200 -w 150 RodsGenn;
+columnLayout;
+attrFieldSliderGrp -min 0 -max 50 -l "Radius" -at "polyCylinder1.radius";
+attrFieldSliderGrp -min 0.1 -max 32 -l "Curve" -at "bend1Handle.tx";
+attrFieldSliderGrp -min 20 -max 300 -l "Heigh" -at "polyExtrudeFace2.thickness";
+button -l "Generate Between Rods" -bgc 1 0.365 0.365 -c "between_rods";
+//attrFieldSliderGrp -min 0 -max 10 -l "Radius2" -at "polyCylinder2.radius";
+showWindow RodsGenn;
+}
+      global proc between_rods(){
+             if(`window -exists RodsGenn`){
+                 deleteUI RodsGenn;
+             }
+          window -t "Rods Generator" -h 200 -w 150 RodsGens;
+          gridLayout -nc 2 -cwh 150 60;;
+          text -l "Rods Count";
+          floatField -v 5 -max 1000 rValue;
+          global float $rc = 5;
+          $rc = `floatField -q -value rValue`;
+          text -l "Rods Distance";
+          floatField -v 5 -max 1000 dValue;
+          global float $dc = 5;
+          $dc = `floatField -q -value rValue`;
+          text -l "Rods Radius";
+          floatField -v 1.3 -max 1000 radValue;
+          global float $ra = 5;
+          $ra = `floatField -q -value radValue`;
+          string $buttonRC = `button -label "Rsfresh Counts"`;
+          button -edit -c("rods_count " + $buttonRC) -bgc 1 0.365 0.365 $buttonRC;
+          button -l "Finish UP" -bgc 0.365 1 0.365 -c "finish_rods";
+text -label "Developed By" -bgc 0.365 0.365 1 ;
+text -label " Amirreza Moghaddam" -bgc 0.365 0.365 1 ;
+          showWindow RodsGens;
+          }
+          
+    proc rods_count(string $countsButton) {
+        group -em -n rodsG;
+        group -em -n rodsG1;
+        string $labelA;
+        string $labelBr;
+        string $currentlabel;
+        $currentlabel = `button -q -l $countsButton`;
+        $labelA = "Refresh Counts";
+        $labelB = "Refresh Count";
+        if ($currentlabel != $labelA) { 
+       button -edit -label $labelA $countsButton;
+       select -r rodsG ;
+       select -add rodsG1 ;
+       doDelete;
+       if (`objExists rodsG2`){
+       select -r rodsG2 ;
+       doDelete;
+       }
+       if (`objExists rodsG3`){
+       select -r rodsG3 ;
+       doDelete;
+       }
+       $rc = `floatField -q -value rValue`;
+       $dc = `floatField -q -value dValue`;
+       $ra = `floatField -q -value radValue`;
+        vector $position = `pointPosition -w rodsCy1.vtx[449]`;
+        vector $position2 = `pointPosition -w rodsCy1.vtx[459]`;
+        vector $sum =  $position + $position2;
+        vector $avg =  $sum /2;
+        // Between Rods
+        polyCylinder -ch on -o on -r $ra -h 10 -sc 1 -cuv 3 -n rodsCy2;
+        move -r 0 5 0 rodsCy2.scalePivot rodsCy2.rotatePivot ;
+        move -rpr ($avg.x) ($avg.y) ($avg.z);
+        select -r rodsCy2.f[20:59] ;
+        doDelete;
+        vector $vp = `pointPosition -w rodsCy1.vtx[898]`;
+        select -r rodsCy2.vtx[0:19] ;
+        move -a -y ($vp.y);
+        //rods numerous
+        select -r rodsCy2;
+        group -n rodsG;
+        select -r rodsCy2;
+        duplicate -rr -renameChildren; 
+        move -r $dc 0 0; 
+           for ($i=1; $i<$rc; ++$i) {
+              duplicate -rr -renameChildren -st; }
+        select -r rodsG;
+        polyUnite -ch 1 -mergeUVSets 1 -centerPivot -name rodsG rodsG;
+        move -a -rpr -x ($avg.x) ;
+} else {
+       button -edit -label $labelB $countsButton;
+       select -r rodsG ;
+       select -add rodsG1 ;
+       doDelete;
+       if (`objExists rodsG2`){
+       select -r rodsG2 ;
+       doDelete;
+       }
+       if (`objExists rodsG3`){
+       select -r rodsG3 ;
+       doDelete;
+       }
+       $rc = `floatField -q -value rValue`;
+       $dc = `floatField -q -value dValue`;
+       $ra = `floatField -q -value radValue`;
+        vector $position = `pointPosition -w rodsCy1.vtx[449]`;
+        vector $position2 = `pointPosition -w rodsCy1.vtx[459]`;
+        vector $sum =  $position + $position2;
+        vector $avg =  $sum /2;
+        // Between Rods
+        polyCylinder -ch on -o on -r $ra -h 10 -sc 1 -cuv 3 -n rodsCy2;
+        move -r 0 5 0 rodsCy2.scalePivot rodsCy2.rotatePivot ;
+        move -rpr ($avg.x) ($avg.y) ($avg.z);
+        select -r rodsCy2.f[20:59] ;
+        doDelete;
+        vector $vp = `pointPosition -w rodsCy1.vtx[898]`;
+        select -r rodsCy2.vtx[0:19] ;
+        move -a -y ($vp.y);
+        //rods numerous
+        select -r rodsCy2;
+        group -n rodsG;
+        select -r rodsCy2;
+        duplicate -rr -renameChildren; 
+        move -r $dc 0 0; 
+           for ($i=1; $i<$rc; ++$i) {
+              duplicate -rr -renameChildren -st; }
+        select -r rodsG;
+        polyUnite -ch 1 -mergeUVSets 1 -centerPivot -name rodsG rodsG;
+        move -a -rpr -x ($avg.x) ;
+}
+}
+global proc finish_rods(){
+    select -r rodsCy1;
+    select -add rodsG1;
+    DeleteAllHistory;
+    rename "rodsCy1" "rods_part01";
+    rename "rodsG1" "rods_part02";
+    select -r rods_part01;
+    select -add rods_part02;
+    group -n final_rods;
+}
